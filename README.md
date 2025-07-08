@@ -1,13 +1,12 @@
 # E-Parking Web App
 
-Aplikasi parkir sederhana berbasis web menggunakan PHP, MySQL, dan Bootstrap. Bisa dijalankan melalui XAMPP atau Docker.
+Aplikasi parkir sederhana berbasis web menggunakan PHP, MySQL, dan Bootstrap. Bisa dijalankan melalui Docker.
 
 ## Fitur Utama
 - Sistem login admin dan petugas
-- Dashboard parkir masuk dan keluar
-- Daftar parkir dengan filter dan export
+- Pencatatan Kendaraan Masuk & Keluar
+- Daftar parkir dengan filter 
 - Manajemen petugas oleh admin
-- Reset password petugas ke default
 - Cetak struk parkir keluar
 
 ## Struktur Folder
@@ -32,22 +31,6 @@ eparking_app/
 └── src/
     └── koneksi.php
 ```
-
-## Cara Menjalankan via XAMPP
-1. **Import Database**:
-   - Buka phpMyAdmin
-   - Buat database: `eparking_db`
-   - Import file `eparking_db.sql`
-
-2. **Letakkan file** ke folder `htdocs/eparking`
-3. Jalankan Apache & MySQL dari XAMPP
-4. Akses aplikasi di browser:
-   ```
-   http://localhost/eparking/login.php
-   ```
-
-## Login Awal
-Jika belum ada akun, buat lewat `register.php` atau import user default dari SQL.
 
 ## Menjalankan via Docker
 ### Persiapan
@@ -99,11 +82,16 @@ services:
 - **Admin** dapat:
   - Tambah/Edit/Hapus Petugas
   - Reset Password petugas
+  - Hapus Data Parkir
 - **Petugas** dapat:
   - Input parkir masuk
   - Proses parkir keluar
   - Edit akun sendiri (username & password)
 
+## ⚙️ Cara Install & Jalankan
+1. Clone repository ini:
+   ```bash
+   git clone https://github.com/USERNAME/eparking.git
 ---
 
 Untuk pertanyaan lebih lanjut, hubungi pengembang atau unggah ke GitHub/DockerHub untuk publikasi.

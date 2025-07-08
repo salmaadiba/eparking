@@ -1,21 +1,34 @@
 <?php
-// File: reset_password.php
 session_start();
 include 'src/koneksi.php';
-if (!isset($_SESSION['login']) || $_SESSION['level'] != 'admin') {
+
+// Cek login dan level admin
+if (!isset($_SESSION['login']) || $_SESSION['level'] !== 'admin') {
     header("Location: login.php");
     exit;
 }
 
-$id = $_GET['id'] ?? 0;
-$password_default = 'user';
+// Ambil ID petugas
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+// Cek ID valid
+if ($id <= 0) {
+    header("Location: admin_petugas.php?msg=invalid_id");
+    exit;
+}
+
+// Set password default
+$password_default = '12345';
+
+// Update password di database
 $stmt = $koneksi->prepare("UPDATE admin SET password = ? WHERE id = ?");
 $stmt->bind_param("si", $password_default, $id);
 
 if ($stmt->execute()) {
-    header("Location: admin_petugas.php?msg=reset");
+    header("Location: admin_petugas.php?msg=reset_success");
     exit;
 } else {
-    echo "<div class='alert alert-danger'>Gagal reset password.</div>";
+    header("Location: admin_petugas.php?msg=reset_failed");
+    exit;
 }
 ?>

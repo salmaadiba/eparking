@@ -1,27 +1,30 @@
 <?php
-// File: hapus_petugas.php
 session_start();
 include 'src/koneksi.php';
-if (!isset($_SESSION['login']) || $_SESSION['level'] != 'admin') {
+
+// Cek login dan level admin
+if (!isset($_SESSION['login']) || $_SESSION['level'] !== 'admin') {
     header("Location: login.php");
     exit;
 }
 
-$id = $_GET['id'] ?? 0;
-
-// Tidak bisa hapus diri sendiri
-if ($_SESSION['id'] == $id) {
-    echo "<div class='alert alert-danger'>Anda tidak dapat menghapus akun sendiri.</div>";
+// Cek apakah ID ada dan valid
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: admin_petugas.php?msg=invalid_id");
     exit;
 }
 
-$stmt = $koneksi->prepare("DELETE FROM admin WHERE id=?");
+$id = (int)$_GET['id'];
+
+// Eksekusi hapus
+$stmt = $koneksi->prepare("DELETE FROM admin WHERE id = ?");
 $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
-    header("Location: admin_petugas.php?msg=hapus");
+    header("Location: admin_petugas.php?msg=hapus_success");
     exit;
 } else {
-    echo "<div class='alert alert-danger'>Gagal menghapus petugas.</div>";
+    header("Location: admin_petugas.php?msg=hapus_failed");
+    exit;
 }
 ?>
