@@ -4,16 +4,24 @@ include 'src/koneksi.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
 
-    $stmt = $koneksi->prepare("INSERT INTO admin (username, password, level) VALUES (?, ?, 'petugas')");
-    $stmt->bind_param("ss", $username, $password);
+    $check = $koneksi->prepare("SELECT username FROM admin WHERE username = ?");
+    $check->bind_param("s", $username);
+    $check->execute();
+    $result = $check->get_result();
 
-    if ($stmt->execute()) {
-        header("Location: login.php");
-        exit;
+    if ($result->num_rows > 0) {
+        $error = "Username sudah digunakan. Pilih username lain.";
     } else {
-        $error = "Gagal register. Username mungkin sudah terdaftar.";
+        $stmt = $koneksi->prepare("INSERT INTO admin (username, password, level) VALUES (?, ?, 'petugas')");
+        $stmt->bind_param("ss", $username, $password);
+        if ($stmt->execute()) {
+            header("Location: login.php");
+            exit;
+        } else {
+            $error = "Gagal register.";
+        }
     }
 }
 ?>

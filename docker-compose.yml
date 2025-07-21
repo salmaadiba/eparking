@@ -1,12 +1,18 @@
+version: "3.9"
 services:
   web:
     build: .
+    container_name: eparking_web
     ports:
       - "8080:80"
     volumes:
       - .:/var/www/html/ # Mount folder proyek lokal ke dalam container web
+    depends_on:
+      - db
+
   db:
-    image: mariadb
+    image: mariadb:latest
+    container_name: eparking_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -15,3 +21,20 @@ services:
       - "3306:3306"
     volumes:
       - ./database:/docker-entrypoint-initdb.d # Mengimpor SQL dari folder 'database'
+      - db_data:/var/lib/mysql # Volume untuk data agar tidak hilang saat container dimatikan
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: eparking_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
